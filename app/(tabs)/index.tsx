@@ -1,74 +1,140 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Image } from 'react-native';
+import {
+  H1,
+  H2,
+  Button,
+  XStack,
+  YStack,
+  Paragraph,
+  Card,
+  Input,
+  Switch,
+  ScrollView,
+  Dialog
+} from 'tamagui';
+import { X } from '@tamagui/lucide-icons';
+import { useDialog } from '@/contexts/DialogContext';
 
 export default function HomeScreen() {
+  const { showDialog } = useDialog();
+
+  const handleOpenDialog = () => {
+    showDialog(
+      <>
+        <Dialog.Portal>
+          <Dialog.Overlay
+            key="overlay"
+            backgroundColor="$shadow6"
+            animation="slow"
+            enterStyle={{ opacity: 0 }}
+            exitStyle={{ opacity: 0 }}
+          />
+
+          <Dialog.Content
+            bordered
+            elevate
+            key="content"
+            animation="quick"
+            enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+            exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+            padding="$4"
+            gap="$4"
+          >
+            <Dialog.Title>Example Dialog</Dialog.Title>
+            <Dialog.Description>
+              This is a proper Tamagui Dialog component instead of a basic alert.
+            </Dialog.Description>
+
+            <XStack alignSelf="flex-end" gap="$4">
+              <Dialog.Close asChild>
+                <Button theme="active" backgroundColor="$green10">
+                  Close
+                </Button>
+              </Dialog.Close>
+            </XStack>
+
+            <Dialog.Close asChild>
+              <Button position="absolute" top="$3" right="$3" size="$2" circular icon={X} />
+            </Dialog.Close>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </>
+    );
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <ScrollView backgroundColor="$background" padding="$4">
+      <YStack space="$4">
+        <XStack space="$4" alignItems="center">
+          <H1 color="$purple10">Tamagui Demo</H1>
+          <Image
+            source={require('@/assets/images/partial-react-logo.png')}
+            style={{ width: 50, height: 30 }}
+          />
+        </XStack>
+
+        <Card elevate bordered padding="$4" space="$4" backgroundColor="$blue2">
+          <H2 color="$blue10">Basic Components</H2>
+          <XStack space="$4" alignItems="center">
+            <Button backgroundColor="$orange10" onPress={handleOpenDialog}>
+              Open Modal
+            </Button>
+            <Button theme="active" backgroundColor="$green10">
+              Active Button
+            </Button>
+            <Button disabled backgroundColor="$gray8">
+              Disabled
+            </Button>
+          </XStack>
+        </Card>
+
+        <Card elevate bordered padding="$4" space="$4" backgroundColor="$pink2">
+          <H2 color="$pink10">Form Elements</H2>
+          <YStack space="$4">
+            <Input placeholder="Type something..." borderColor="$pink8" />
+            <XStack space="$4" alignItems="center">
+              <Paragraph color="$pink11">Toggle switch:</Paragraph>
+              <Switch backgroundColor="$pink8">
+                <Switch.Thumb backgroundColor="$pink11" />
+              </Switch>
+            </XStack>
+          </YStack>
+        </Card>
+
+        <Card elevate bordered padding="$4" space="$4" backgroundColor="$yellow2">
+          <H2 color="$yellow10">Typography</H2>
+          <YStack space="$2">
+            <H1 color="$orange10">Heading 1</H1>
+            <H2 color="$red10">Heading 2</H2>
+            <Paragraph size="$6" color="$yellow11">
+              Large paragraph text
+            </Paragraph>
+            <Paragraph color="$yellow12">Normal paragraph text</Paragraph>
+            <Paragraph theme="alt1" color="$orange11">
+              Alternate theme text
+            </Paragraph>
+          </YStack>
+        </Card>
+
+        <Card elevate bordered padding="$4" space="$4" backgroundColor="$green2">
+          <H2 color="$green10">Layout Stack Demo</H2>
+          <XStack space="$2" flexWrap="wrap">
+            {['$purple10', '$cyan10', '$pink10'].map(color => (
+              <YStack
+                key={color}
+                backgroundColor={color}
+                width={80}
+                height={80}
+                borderRadius="$4"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Paragraph color="white">{color.replace('$', '')}</Paragraph>
+              </YStack>
+            ))}
+          </XStack>
+        </Card>
+      </YStack>
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
